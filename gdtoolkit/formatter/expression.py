@@ -86,11 +86,6 @@ def _format_comma_separated_list(
 def _format_foldable(
     expression: Tree, expression_context: ExpressionContext, context: Context
 ) -> FormattedLines:
-    # Always format enums on multiple lines
-    if expression.data == "enum_body":
-        return _format_foldable_to_multiple_lines(
-            expression, expression_context, context
-        )
     if is_expression_forcing_multiple_lines(expression, context.standalone_comments):
         return _format_foldable_to_multiple_lines(
             expression, expression_context, context
