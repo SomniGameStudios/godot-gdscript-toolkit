@@ -55,7 +55,7 @@ To install this custom fork, you need `python3` and `pip`.
 
 ```bash
 # Clone this repository
-git clone https://github.com/YOUR-USERNAME/godot-gdscript-toolkit.git
+git clone https://github.com/SomniGameStudios/godot-gdscript-toolkit.git
 cd godot-gdscript-toolkit
 
 # Install in editable mode
