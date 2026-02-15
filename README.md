@@ -1,8 +1,44 @@
-# GDScript Toolkit
-[![](https://github.com/Scony/godot-gdscript-toolkit/workflows/Tests/badge.svg)](https://github.com/Scony/godot-gdscript-toolkit/actions)
+# GDScript Toolkit (Custom Fork)
+
+> **Note**: This is a custom fork of [Scony/godot-gdscript-toolkit](https://github.com/Scony/godot-gdscript-toolkit) with additional formatting options and behavior changes.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Buy me a coffe](https://img.shields.io/badge/Buy%20me%20a%20coffe-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/pawel_lampe)
+
+## Custom Features
+
+This fork includes the following custom modifications to the formatter:
+
+1. **`--single-blank-lines` flag**: Use single blank lines between class methods instead of the default double blank lines
+2. **Always-multiline enums**: Enum definitions are always formatted with one element per line, regardless of length
+3. **Always-multiline dictionaries**: Dictionary literals are always formatted with one key-value pair per line, regardless of length
+
+### Example of custom formatting:
+
+```gdscript
+# Enums are always multiline (one element per line)
+enum Status {
+	IDLE,
+	RUNNING,
+	COMPLETED
+}
+
+# Dictionaries are always multiline (one pair per line)
+func get_config() -> Dictionary:
+	return {
+		"name": "example",
+		"value": 42
+	}
+
+# Using --single-blank-lines flag
+class MyClass:
+	func foo():
+		pass
+
+	func bar():  # Single blank line instead of double
+		pass
+```
+
+## About
 
 This project provides a set of tools for daily work with `GDScript`. At the moment it provides:
 
@@ -13,32 +49,29 @@ This project provides a set of tools for daily work with `GDScript`. At the mome
 
 ## Installation
 
-To install this project you need `python3` and `pip`.
-Regardless of the target version, installation is done by `pip3` command and for stable releases, it downloads the package from PyPI.
+To install this custom fork, you need `python3` and `pip`.
 
-### Godot 4
+### Installing from this fork
 
+```bash
+# Clone this repository
+git clone https://github.com/YOUR-USERNAME/godot-gdscript-toolkit.git
+cd godot-gdscript-toolkit
+
+# Install in editable mode
+pip install -e .
+# or
+pipx install .
 ```
+
+### Installing the original version
+
+For the original upstream version without custom modifications, see [Scony/godot-gdscript-toolkit](https://github.com/Scony/godot-gdscript-toolkit):
+
+```bash
 pip3 install "gdtoolkit==4.*"
 # or
 pipx install "gdtoolkit==4.*"
-```
-
-### Godot 3
-
-```
-pip3 install "gdtoolkit==3.*"
-# or
-pipx install "gdtoolkit==3.*"
-```
-
-### `master` (latest)
-
-Latest version (potentially unstable) can be installed directly from git:
-```
-pip3 install git+https://github.com/Scony/godot-gdscript-toolkit.git
-# or
-pipx install git+https://github.com/Scony/godot-gdscript-toolkit.git
 ```
 
 ## Linting with gdlint [(more)](https://github.com/Scony/godot-gdscript-toolkit/wiki/3.-Linter)
@@ -60,7 +93,20 @@ misc/MarkovianPCG.gd:96: Error: Function argument name "aPos" is not valid (func
 
 **Formatting may lead to data loss, so it's highly recommended to use it along with Version Control System (VCS) e.g. `git`**
 
-To run a formatter you need to execute `gdformat` on the file you want to format. So, given a `test.gd` file:
+To run a formatter you need to execute `gdformat` on the file you want to format.
+
+### Custom formatting options
+
+This fork adds the `--single-blank-lines` flag:
+```bash
+gdformat --single-blank-lines your_file.gd
+```
+
+This uses single blank lines between class methods instead of the default double blank lines.
+
+### Example
+
+Given a `test.gd` file:
 
 ```
 class X:
@@ -78,7 +124,9 @@ when you execute `gdformat test.gd` command, the `test.gd` file will be reformat
 
 ```
 class X:
-	var x = [1, 2, {'a': 1}]
+	var x = [1, 2, {
+		'a': 1
+	}]  # Note: dicts always use multiple lines in this fork
 	var y = [
 		1,
 		2,
@@ -93,6 +141,8 @@ class X:
 func bar():
 	print('bar')
 ```
+
+**Note**: In this fork, enums and dictionaries are always formatted on multiple lines with one element/pair per line, regardless of their length or content.
 
 ## Parsing with gdparse [(more)](https://github.com/Scony/godot-gdscript-toolkit/wiki/2.-Parser)
 
@@ -197,3 +247,15 @@ repos:
 ## Development [(more)](https://github.com/Scony/godot-gdscript-toolkit/wiki/5.-Development)
 
 Everyone is free to fix bugs or introduce new features. For that, however, please refer to existing issue or create one before starting implementation.
+
+## Contributing to Upstream
+
+This fork contains opinionated formatting changes that may not align with the upstream project's goals. If you want to contribute general bug fixes or features that would benefit the wider community, please consider contributing directly to the [original repository](https://github.com/Scony/godot-gdscript-toolkit).
+
+## License
+
+This fork maintains the same MIT license as the original project. See the LICENSE file for details.
+
+## Credits
+
+Original project by [Paweł Lampe](https://github.com/Scony) and contributors. Custom modifications for personal/team preferences.

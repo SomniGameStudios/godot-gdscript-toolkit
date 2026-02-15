@@ -28,7 +28,6 @@ def is_foldable(expression: Node) -> bool:
         "var_capture_pattern",
         "etc_pattern",
         "wildcard_pattern",
-        "enum_body",
     ]
 
 
