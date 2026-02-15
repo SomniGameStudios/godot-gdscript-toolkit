@@ -86,11 +86,6 @@ def _format_comma_separated_list(
 def _format_foldable(
     expression: Tree, expression_context: ExpressionContext, context: Context
 ) -> FormattedLines:
-    # Always format enums and dicts on multiple lines
-    if expression.data in ["enum_body", "dict"]:
-        return _format_foldable_to_multiple_lines(
-            expression, expression_context, context
-        )
     if is_expression_forcing_multiple_lines(expression, context.standalone_comments):
         return _format_foldable_to_multiple_lines(
             expression, expression_context, context
@@ -153,7 +148,7 @@ def _format_foldable_to_multiple_lines(
         "par_expr": _format_parentheses_to_multiple_lines,
         "array": _format_array_to_multiple_lines,
         "string": _format_string_to_multiple_lines,
-        "dict": _format_dict_body_to_multiple_lines,
+        "dict": _format_dict_to_multiple_lines,
         "c_dict_element": _format_kv_pair_to_multiple_lines,
         "eq_dict_element": _format_kv_pair_to_multiple_lines,
         "lambda": _format_lambda_to_multiple_lines,
@@ -166,7 +161,7 @@ def _format_foldable_to_multiple_lines(
         "func_arg_regular": _format_func_arg_to_multiple_lines,
         "func_arg_inf": _format_func_arg_to_multiple_lines,
         "func_arg_typed": _format_func_arg_to_multiple_lines,
-        "enum_body": _format_enum_body_to_multiple_lines,
+        "enum_body": _format_dict_to_multiple_lines,
         "signal_args": _format_args_to_multiple_lines,
         "comma_separated_list": _format_comma_separated_list_to_multiple_lines,
         "contextless_comma_separated_list": (
@@ -229,88 +224,6 @@ def _format_dict_to_multiple_lines(
     return _format_comma_separated_list(
         a_dict.children, new_expression_context, context
     )
-
-
-def _format_enum_body_to_multiple_lines(
-    enum_body: Tree, expression_context: ExpressionContext, context: Context
-) -> FormattedLines:
-    # Force enum to always use multiple lines, one element per line
-    child_context = context.create_child_context(expression_context.prefix_line)
-    child_expression_context = ExpressionContext(
-        "",
-        expression_context.prefix_line,
-        "",
-        get_end_line(enum_body),
-    )
-
-    fake_meta = Meta()
-    fake_meta.line = expression_context.prefix_line
-    fake_meta.end_line = get_end_line(enum_body)
-    fake_expression = Tree("contextless_comma_separated_list", enum_body.children, fake_meta)
-
-    # Build the output with opening brace, elements, and closing brace
-    formatted_lines = [
-        (
-            expression_context.prefix_line,
-            f"{context.indent_string}{expression_context.prefix_string}{{",
-        )
-    ]
-
-    if len(enum_body.children) > 0:
-        # Directly call the contextless formatter to force multiple lines
-        formatted_lines += _format_contextless_comma_separated_list_to_multiple_lines(
-            fake_expression, child_expression_context, child_context
-        )
-
-    formatted_lines.append(
-        (
-            get_end_line(enum_body),
-            f"{context.indent_string}}}{expression_context.suffix_string}",
-        )
-    )
-
-    return formatted_lines
-
-
-def _format_dict_body_to_multiple_lines(
-    a_dict: Tree, expression_context: ExpressionContext, context: Context
-) -> FormattedLines:
-    # Force dict to always use multiple lines, one key-value pair per line
-    child_context = context.create_child_context(expression_context.prefix_line)
-    child_expression_context = ExpressionContext(
-        "",
-        expression_context.prefix_line,
-        "",
-        get_end_line(a_dict),
-    )
-
-    fake_meta = Meta()
-    fake_meta.line = expression_context.prefix_line
-    fake_meta.end_line = get_end_line(a_dict)
-    fake_expression = Tree("contextless_comma_separated_list", a_dict.children, fake_meta)
-
-    # Build the output with opening brace, elements, and closing brace
-    formatted_lines = [
-        (
-            expression_context.prefix_line,
-            f"{context.indent_string}{expression_context.prefix_string}{{",
-        )
-    ]
-
-    if len(a_dict.children) > 0:
-        # Directly call the contextless formatter to force multiple lines
-        formatted_lines += _format_contextless_comma_separated_list_to_multiple_lines(
-            fake_expression, child_expression_context, child_context
-        )
-
-    formatted_lines.append(
-        (
-            get_end_line(a_dict),
-            f"{context.indent_string}}}{expression_context.suffix_string}",
-        )
-    )
-
-    return formatted_lines
 
 
 def _format_args_to_multiple_lines(
