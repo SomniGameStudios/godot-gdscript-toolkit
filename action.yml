@@ -9,6 +9,9 @@ inputs:
   version:
     description: Version of the gdtoolkit to install
     default: "4.*"
+  cache-pip:
+    description: Cache pip dependencies (set to "false" to disable)
+    default: "true"
 
 runs:
   using: composite
@@ -24,7 +27,7 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: "3.x"
-        cache: "pip"
+        cache: ${{ inputs.cache-pip == 'true' && 'pip' || '' }}
 
     - id: upgrade-setuptools
       run: pip install --upgrade setuptools
